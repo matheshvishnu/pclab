@@ -1,0 +1,40 @@
+#include<stdio.h>
+#include<math.h>
+#include<omp.h>
+int is_prime(int n)
+{	
+	if(n==1)
+		return 1;
+	for(int i=2;i<=sqrt(n);i++)
+	{
+		if(n%i==0)
+			return 0;
+	}
+	return 1;
+}
+int main()
+{
+  int count=0;
+  double start_t=omp_get_wtime();
+  for(int i=1;i<=1000000;i++){
+      if(is_prime(i))
+          count=count+1;
+  }
+  double end_t=omp_get_wtime();
+  printf("Prime count=%d\n",count);
+  printf("Serial Time=%f\n",(end_t-start_t));
+  
+  count=0;
+  double parallel_start_t=omp_get_wtime();
+  omp_set_num_threads(10);
+  #pragma omp parallel for
+      for(int i=1;i<=1000000;i++){
+          if(is_prime(i))
+              count=count+1;
+      }
+  double parallel_end_t=omp_get_wtime();
+  printf("Prime count=%d\n",count);
+  printf("Parallel Time=%f\n",(parallel_end_t-parallel_start_t));
+
+
+}
